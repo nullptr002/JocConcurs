@@ -19,12 +19,15 @@ void Server::run()
 			m_clients.back()->setBlocking(false);
 			m_connectedClients++;
 
-			std::cout << "New client connected: " << m_clients.back()->getRemoteAddress() << std::endl;
+			std::cout << "New client connected: " << m_clients[m_clients.size() - 2]->getRemoteAddress() << std::endl;
 		}
 
 		for (size_t i = 0; i < m_clients.size() - 1; i++)
 		{
-			if (m_clients[i]->receive(packet) == sf::Socket::Status::Done)
+			sf::Socket::Status status = m_clients[i]->receive(packet);
+
+			//std::cout << "Status: " << status << std::endl;
+			if (status == sf::Socket::Status::Done)
 			{
 				std::cout << "aici" << std::endl;
 
@@ -43,8 +46,8 @@ Server::Server()
 	m_clients.emplace_back(std::make_unique<sf::TcpSocket>());
 	m_clients[0]->setBlocking(false);
 
-	m_listener.setBlocking(false);
 	m_listener.listen(20000);
+	m_listener.setBlocking(false);
 
 	std::cout << m_clients.size() << std::endl;
 }

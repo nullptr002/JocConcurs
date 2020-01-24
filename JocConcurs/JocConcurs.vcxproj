@@ -21,9 +21,13 @@
   <ItemGroup>
     <ClCompile Include="..\Client\Client.cpp" />
     <ClCompile Include="..\Client\clientMain.cpp" />
+    <ClCompile Include="..\Client\States\MenuState.cpp" />
+    <ClCompile Include="..\Client\States\State.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Client\Client.h" />
+    <ClInclude Include="..\Client\States\MenuState.h" />
+    <ClInclude Include="..\Client\States\State.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
