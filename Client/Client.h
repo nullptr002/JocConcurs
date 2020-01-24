@@ -37,6 +37,8 @@ public:
 
 	} const constants;
 
+	const sf::RectangleShape& getVirtualCursor() const;
+
 // Metode private
 private:
 	// Constructor privat, clasa nu trebuie sa poata fi instantiata din exteriorul ei
@@ -53,10 +55,17 @@ private:
 
 // Variabile private
 private:
+	// asta e doar ca anti-aliasing-ul sa fie setat la 16.
+	sf::ContextSettings settings{ 0,0,16,1,1,0,0 };
+
 	// fereastra in care vor aparea graficile
-	sf::RenderWindow m_window{ sf::VideoMode(constants.window.width, constants.window.height),
+	sf::RenderWindow m_window
+	{ 
+		sf::VideoMode(constants.window.width, constants.window.height),
 		"Just a simple multiplayer turn-based strategy game", 
-		sf::Style::Close | sf::Style::Titlebar };
+		sf::Style::Close | sf::Style::Titlebar,
+		settings
+	};
 
 	// container cu toate game state-urile
 	std::vector<std::unique_ptr<State>> m_states;
@@ -68,7 +77,10 @@ private:
 	};
 	
 	// game state-ul selectat
-	GameStateEnum selectedState = GameStateEnum::menu;
+	GameStateEnum selectedState			= GameStateEnum::menu;
 	
+	// ca sa testez mai usor coliziunea mouse-lui cu butoanele
+	sf::RectangleShape virtualCursor	= sf::RectangleShape(sf::Vector2f(1.0f,1.0f));
+
 };
 

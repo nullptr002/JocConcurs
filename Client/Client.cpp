@@ -1,6 +1,7 @@
 #include "Client.h"
 
 #include "States/MenuState.h"
+#include <iostream>
 
 Client& Client::getInstance()
 {
@@ -28,13 +29,20 @@ void Client::run()
 		m_states.at(static_cast<int>(selectedState))->draw(m_window);
 
 		deltaTime = deltaClock.restart();
-
+		virtualCursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(m_window)));
 	}
+}
+
+const sf::RectangleShape& Client::getVirtualCursor() const
+{
+	return virtualCursor;
 }
 
 Client::Client()
 {
 	m_states.emplace_back(std::make_unique<MenuState>());
+
+	std::cout << m_window.getSettings().antialiasingLevel << std::endl;
 }
 
 Client::~Client()

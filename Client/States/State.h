@@ -6,6 +6,7 @@
 class Client;
 enum class GameStateEnum;
 
+
 class State 
 {
 public:
@@ -24,8 +25,7 @@ protected:
 
 protected:
 	static Client *s_client;
-	static sf::RectangleShape s_transitionRectangle;
+	static sf::RectangleShape *s_transitionRectangle;
 
 private:
-	static bool isTransitionRectangleInitialized;
 };

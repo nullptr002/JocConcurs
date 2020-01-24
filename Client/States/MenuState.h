@@ -15,9 +15,9 @@ public:
 
 	void changeState(GameStateEnum to)								override;
 
-protected:
+private:
 	
 
-protected:
-
+private:
+	sf::CircleShape hexagon{ 50, 6 };
 };
