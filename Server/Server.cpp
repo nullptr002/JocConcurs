@@ -9,42 +9,65 @@ Server& Server::getInstance()
 	return instance;
 }
 
+/*
+	Coduri pachet
+
+	Fiecare pachet va avea ca prima informatie un numar (int), si in functie de numarul ala
+	decid ce fac cu restul informatiei
+
+	1 - nume
+	2 - 
+
+*/
+
+
 void Server::run()
 {
 	while (true)
 	{
-		if (m_listener.accept(*m_clients.back()) == sf::Socket::Status::Done)
+		if (m_connectedClients < m_maxConnectedClients)
 		{
-			m_clients.emplace_back(std::make_unique<sf::TcpSocket>());
-			m_clients.back()->setBlocking(false);
-			m_connectedClients++;
-
-			std::cout << "New client connected: " << m_clients[m_clients.size() - 2]->getRemoteAddress() << std::endl;
+			acceptNewClients();
 		}
 
 		for (size_t i = 0; i < m_clients.size() - 1; i++)
 		{
-			sf::Socket::Status status = m_clients[i]->receive(packet);
+			sf::Socket::Status status = m_clients[i]->socket.receive(m_clients[i]->toReceive);
 
-			//std::cout << "Status: " << status << std::endl;
 			if (status == sf::Socket::Status::Done)
 			{
-				std::cout << "aici" << std::endl;
+				int code = 0;
 
-				packet >> packetContent;
-				std::cout << packetContent << std::endl;
+				m_clients[i]->toReceive >> code;
 
-				packet.clear();
-				packetContent.empty();
+				if (code == 1)
+				{
+					m_clients[i]->toReceive >> m_clients[i]->name;
+					std::cout << "Clientul [" << m_clients[i]->socket.getRemoteAddress().toString() << "] ";
+					std::cout << "si-a setat numele \"" << m_clients[i]->name << "\".";
+				}
+
+				m_clients[i]->toReceive.clear();
 			}
 		}
 	}
 }
 
+void Server::acceptNewClients()
+{
+	if (m_listener.accept(m_clients.back()->socket) == sf::Socket::Status::Done)
+	{
+		m_clients.emplace_back(std::make_unique<SClient>());
+		m_connectedClients++;
+
+		std::cout << "Un nou client s-a conectat la server: [";
+		std::cout << m_clients[m_clients.size() - 2]->socket.getRemoteAddress().toString() << "]" << std::endl;
+	}
+}
+
 Server::Server()
 {
-	m_clients.emplace_back(std::make_unique<sf::TcpSocket>());
-	m_clients[0]->setBlocking(false);
+	m_clients.emplace_back(std::make_unique<SClient>());
 
 	m_listener.listen(20000);
 	m_listener.setBlocking(false);
