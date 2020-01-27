@@ -24,8 +24,21 @@ private:
 	void loadButtons();
 
 private:
-	sf::Texture simple;
-	sf::Texture hovered;
-	sf::Texture clicked;
-	Button *button = nullptr;
+	sf::Texture joacaSimple;
+	sf::Texture joacaHovered;
+	sf::Texture joacaClicked;
+	Button *joaca = nullptr;
+
+	sf::Sprite nameMessageBox;
+	sf::Texture nameMessageBoxTexture;
+
+	Button* ok = nullptr;
+	sf::Texture okSimple;
+	sf::Texture okHovered;
+	sf::Texture okClicked;
+
+	std::string name = "";
+	sf::Text nameText;
+
+	bool nameReadyToSend = false;
 };

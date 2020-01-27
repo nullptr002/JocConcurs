@@ -1,6 +1,7 @@
 #include "Client.h"
 
 #include "States/MenuState.h"
+#include "States/IntroState.h"
 #include <iostream>
 
 sf::Font Client::font;
@@ -50,8 +51,18 @@ const sf::Font& Client::getFont()
 	return font;
 }
 
+const std::string& Client::getName() const
+{
+	return name;
+}
+
+void Client::setName(std::string l_name)
+{
+	name = l_name;
+}
+
 Client::Client()
-	: m_states{ { std::make_unique<MenuState>() } }
+	: m_states{ { std::make_unique<IntroState>(), std::make_unique<MenuState>() } }
 {
 	font.loadFromFile("resources/Franklin Gothic Demi Cond Regular.ttf");
 
@@ -99,7 +110,6 @@ void Client::handleServerConnection()
 				packetToSend.clear();
 			}
 		}
-		
 
 		m_states.at(static_cast<int>(selectedState))->receiveFromServer(socket);
 		m_states.at(static_cast<int>(selectedState))->sendToServer(socket);

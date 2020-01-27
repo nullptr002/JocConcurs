@@ -34,6 +34,9 @@ protected:
 	static bool transitioning;
 	static sf::Clock transitionClock;
 
+	static sf::Packet toSendPacket;
+	static sf::Packet toReceivePacket;
+
 private:
 	static double transitionDuration;
 };

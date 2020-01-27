@@ -27,6 +27,9 @@ sf::RectangleShape transitionRectangle = []() -> sf::RectangleShape {
 // pointer la obiectul global de mai sus
 sf::RectangleShape* State::s_transitionRectangle = nullptr;
 
+sf::Packet State::toSendPacket;
+sf::Packet State::toReceivePacket;
+
 State::State()
 {
 	if(!s_transitionRectangle)

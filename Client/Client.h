@@ -12,6 +12,7 @@ class State;
 // enum cu game state-uri (pentru indexarea dupa nume a elementelor din vector)
 enum class GameStateEnum
 {
+	intro,
 	menu,
 	lobby,
 	optiuni
@@ -57,6 +58,9 @@ public:
 	
 	static const sf::Font& getFont();
 
+	const std::string& getName() const;
+	void setName(std::string l_name);
+
 // Metode private
 private:
 	// Constructor privat, clasa nu trebuie sa poata fi instantiata din exteriorul ei
@@ -90,21 +94,22 @@ private:
 
 	
 	// container cu toate game state-urile
-	std::array<std::unique_ptr<State>, 1> m_states;
+	std::array<std::unique_ptr<State>, 2> m_states;
 	
 	// game state-ul selectat
-	GameStateEnum selectedState			= GameStateEnum::menu;
+	GameStateEnum selectedState			= GameStateEnum::intro;
 
 
 	sf::TcpSocket socket;
 
 	sf::Packet packetToSend;
-	std::string name = "Lucian";
 
 	sf::Packet packetToReceive;
 
 	bool connected = false;
 	
+
+	std::string name = "";
 
 	// ca sa testez mai usor coliziunea mouse-ului cu butoanele
 	sf::RectangleShape virtualCursor	= sf::RectangleShape(sf::Vector2f(1.0f,1.0f));
