@@ -10,7 +10,7 @@ Client* State::s_client = &Client::getInstance();
 
 bool State::transitioning = false;
 sf::Clock State::transitionClock;
-double State::transitionDuration = 2.0;
+double State::transitionDuration = 1.0;
 
 // dreptunghi care acopera tot ecranul, va fi folosit pentru fade-ul intre tranzitiile game state-urilor
 // daca va intrebati de ce este variabila globala si nu membra, 
@@ -19,7 +19,7 @@ sf::RectangleShape transitionRectangle = []() -> sf::RectangleShape {
 
 	sf::RectangleShape shape;
 	shape.setSize(sf::Vector2f(Client::constants().window.width, Client::constants().window.height));
-	shape.setFillColor(sf::Color::Transparent);
+	shape.setFillColor(sf::Color::Black);
 
 	return shape;
 } ();
@@ -42,6 +42,12 @@ void State::pollEvents(sf::Event& evnt, sf::RenderWindow& window)
 	{
 		window.close();
 	}
+}
+
+void State::changeState()
+{
+	transitioning = true;
+	transitionClock.restart();
 }
 
 void State::transition()

@@ -7,7 +7,6 @@
 class Client;
 enum class GameStateEnum;
 
-
 class State 
 {
 public:
@@ -22,10 +21,12 @@ public:
 	virtual void sendToServer(sf::TcpSocket &socket)		= 0;
 	virtual void receiveFromServer(sf::TcpSocket& socket)	= 0;
 
-	virtual void changeState(GameStateEnum to)				= 0;
+	virtual void loadTheOtherState(GameStateEnum which)		= 0;
 
 protected:
 	void transition();
+
+	void changeState();
 
 protected:
 	static Client *s_client;
@@ -37,6 +38,8 @@ protected:
 	static sf::Packet toSendPacket;
 	static sf::Packet toReceivePacket;
 
-private:
 	static double transitionDuration;
+private:
+
+	friend class Client;
 };

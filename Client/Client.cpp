@@ -2,6 +2,10 @@
 
 #include "States/MenuState.h"
 #include "States/IntroState.h"
+#include "States/LobbyState.h"
+
+#include "ColorPallete.h"
+
 #include <iostream>
 
 sf::Font Client::font;
@@ -28,9 +32,18 @@ void Client::run()
 	while (m_window.isOpen())
 	{
 		if (lol.getElapsedTime().asSeconds() > 0.1f)
-			m_states.at(static_cast<int>(selectedState))->pollEvents(evnt, m_window);
+		{
+			while (m_window.pollEvent(evnt))
+			{
+				m_states.at(static_cast<int>(selectedState))->pollEvents(evnt, m_window);
+				handleWindowDrag1(evnt);
+			}
+		}
+
 
 		m_states.at(static_cast<int>(selectedState))->update(deltaTime);
+
+		handleWindowDrag2();
 
 		m_states.at(static_cast<int>(selectedState))->draw(m_window);
 
@@ -61,57 +74,129 @@ void Client::setName(std::string l_name)
 	name = l_name;
 }
 
-Client::Client()
-	: m_states{ { std::make_unique<IntroState>(), std::make_unique<MenuState>() } }
+void Client::setState(GameStateEnum which)
 {
-	font.loadFromFile("resources/Franklin Gothic Demi Cond Regular.ttf");
+	selectedState = which;
+}
+
+Client::Client()
+	: m_states{ { std::make_unique<IntroState>(), std::make_unique<MenuState>(), std::make_unique<LobbyState>() } }
+{
+	font.loadFromFile("resources/ebrima.ttf");
 
 	socket.setBlocking(false);
-	int a = 1;
-	packetToSend << a << name;
+
+	packetToSend << 2 << name;
 }
 
 Client::~Client()
 {
 }
 
-void Client::handleServerConnection()
+void Client::handleWindowDrag1(sf::Event& evnt)
 {
-	if (socket.getRemoteAddress() == sf::IpAddress::None)
+	if (State::s_transitionRectangle->getOutlineThickness() != -1.0f)
 	{
-		connected = false;
+		State::s_transitionRectangle->setOutlineThickness(-1.0f);
+	}
+
+	if (evnt.type == sf::Event::MouseButtonPressed)
+	{
+		if (evnt.mouseButton.button == sf::Mouse::Left)
+		{
+			grabOffset = m_window.getPosition() - sf::Mouse::getPosition();
+		}
+	}
+}
+
+void Client::handleWindowDrag2()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+	{
+		State::s_transitionRectangle->setOutlineColor(colorPallete.outline2);
+		isWindowGrabbed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
 	}
 	else
 	{
-		connected = true;
+		State::s_transitionRectangle->setOutlineColor(sf::Color(255, 255, 255, 0));
+		isWindowGrabbed = false;
 	}
 
-	if (!connected)
+	if (isWindowGrabbed)
+	{
+		m_window.setPosition(sf::Mouse::getPosition() + grabOffset);
+
+		State::s_transitionRectangle->setOutlineColor(sf::Color(255, 255, 255, 255));
+	}
+}
+
+void Client::handleServerConnection()
+{
+	static bool supperficiallyConnected = false;
+
+	sf::IpAddress addr = socket.getRemoteAddress();
+	if (addr == sf::IpAddress::None)
+	{
+		supperficiallyConnected = false;
+	}
+	else
+	{
+		supperficiallyConnected = true;
+	}
+
+	if (!supperficiallyConnected)
 	{
 		sf::Socket::Status status = socket.connect(constants().network.server_ip, constants().network.port);
 		
 		if (status == sf::Socket::Status::Done)
 		{
-			connected = true;
-			std::cout << "Te-ai conectat la server!" << std::endl;
+			supperficiallyConnected = true;
 		}
 	}
 	else
 	{
-		static bool flag = false;
-
-		if (!flag)
-		{
-			sf::Socket::Status status = socket.send(packetToSend);
-
-			if (status == sf::Socket::Status::Done)
-			{
-				flag = true;
-				packetToSend.clear();
-			}
-		}
-
 		m_states.at(static_cast<int>(selectedState))->receiveFromServer(socket);
 		m_states.at(static_cast<int>(selectedState))->sendToServer(socket);
+
+		testConnection();
+	}
+}
+
+void Client::testConnection()
+{
+	static sf::Packet testPacket;
+	static sf::Clock testClock;
+	static float testCycleDuration = 1.0f;
+
+	if (testClock.getElapsedTime().asSeconds() > testCycleDuration)
+	{
+		static bool wasInserted = false;
+
+		if (!wasInserted)
+		{
+			testPacket << 1;
+			wasInserted = true;
+		}
+
+		sf::Socket::Status status = socket.send(testPacket);
+
+		if (status == sf::Socket::Status::Done)
+		{
+			std::cout << "Test sent. Duration: " << testClock.getElapsedTime().asSeconds() - 1.0f << std::endl;
+
+			testClock.restart();
+			wasInserted = false;
+			
+			if (!connected)
+			{
+				connected = true;
+				std::cout << "Te-ai conectat la server!" << std::endl;
+			}
+		}
+		else if (testClock.getElapsedTime().asSeconds() > 3.0f)
+		{
+			connected = false;
+			std::cout << "Disconnected!" << std::endl;
+		}
 	}
 }

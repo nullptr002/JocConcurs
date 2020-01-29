@@ -9,13 +9,12 @@
 
 class State;
 
-// enum cu game state-uri (pentru indexarea dupa nume a elementelor din vector)
+// enum cu game state-uri (pentru indexarea dupa nume a elementelor din array)
 enum class GameStateEnum
 {
 	intro,
 	menu,
-	lobby,
-	optiuni
+	lobby
 };
 
 // Clasa de baza, singleton (nu pot exista 2 instante)
@@ -61,6 +60,8 @@ public:
 	const std::string& getName() const;
 	void setName(std::string l_name);
 
+	void setState(GameStateEnum which);
+
 // Metode private
 private:
 	// Constructor privat, clasa nu trebuie sa poata fi instantiata din exteriorul ei
@@ -75,26 +76,36 @@ private:
 	// Copy assignment operator sters, clasa nu trebuie sa poata fi copiata
 	void operator=(Client& other) = delete;
 
+	// deoarece am scos titlebar-ul, a trebuit sa fac niste functii speciale cu care tragi fereastra
+	// iar motivul pentru care sunt 2, e ca sunt doua lucruri ce trebuie executate in parti diferite
+	// daca ar fi o singura functie, ar putea exista mici bug-uri cand spamezi insistent click si tragi
+	// btw, ca sa tragi fereastra tii apasat LCTRL + LCLICK
+	void handleWindowDrag1(sf::Event &evnt);
+	void handleWindowDrag2();
 
 	void handleServerConnection();
 
+	void testConnection();
+
 // Variabile private
 private:
-	// asta e doar ca anti-aliasing-ul sa fie setat la 16.
-	sf::ContextSettings settings{ 0,0,16,1,1,0,0 };
+	// asta e doar ca anti-aliasing-ul sa fie setat la x16.
+	sf::ContextSettings settings{ 0, 0, 16, 1, 1, 0, 0 };
 
 	// fereastra in care vor aparea graficile
 	sf::RenderWindow m_window
 	{ 
 		sf::VideoMode(constants().window.width, constants().window.height),
 		"Just a simple multiplayer turn-based strategy game", 
-		sf::Style::Close | sf::Style::Titlebar,
+		sf::Style::None,
 		settings
 	};
 
+	sf::Vector2i grabOffset;
+	bool isWindowGrabbed = false;
 	
 	// container cu toate game state-urile
-	std::array<std::unique_ptr<State>, 2> m_states;
+	std::array<std::unique_ptr<State>, 3> m_states;
 	
 	// game state-ul selectat
 	GameStateEnum selectedState			= GameStateEnum::intro;
@@ -118,5 +129,6 @@ private:
 	// singurul font folosit in tot programul, public
 	static sf::Font font;
 
+	friend class IntroState;
 };
 

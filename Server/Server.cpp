@@ -15,8 +15,11 @@ Server& Server::getInstance()
 	Fiecare pachet va avea ca prima informatie un numar (int), si in functie de numarul ala
 	decid ce fac cu restul informatiei
 
-	1 - nume
-	2 - 
+	0 - error?
+
+	1 - testare conexiune
+	2 - nume
+	3 - 
 
 */
 
@@ -42,12 +45,37 @@ void Server::run()
 
 				if (code == 1)
 				{
+					// nimic nu se intampla. acest cod era necesar pentru teste la inceput
+					// si pentru detectarea conexiunii daca server-ul are acelasi ip cu cel putin un client
+				}
+				else if (code == 2)
+				{
 					m_clients[i]->toReceive >> m_clients[i]->name;
-					std::cout << "Clientul [" << m_clients[i]->socket.getRemoteAddress().toString() << "] ";
+
+					std::cout << "Clientul [" << m_clients[i]->remoteIp << "] ";
 					std::cout << "si-a setat numele \"" << m_clients[i]->name << "\".";
+					std::cout << std::endl;
+				}
+				else if (code == 3)
+				{
+					m_clients[i]->inLobby = true;
+					
 				}
 
 				m_clients[i]->toReceive.clear();
+
+				m_clients[i]->disconnectDelayClock.restart();
+			}
+			else
+			{
+				// daca nu s-a primit un pachet cu code-ul 1 pentru testarea conexiunii,
+				// conexiunea a picat
+				if (m_clients[i]->disconnectDelayClock.getElapsedTime().asSeconds() > m_disconnectTime)
+				{
+					std::cout << "Clientul [" << m_clients[i]->remoteIp << "] ";
+					std::cout << "cu numele [\"" << m_clients[i]->name << "\"] s-a deconectat." << std::endl;
+					m_clients.erase(m_clients.begin() + i);
+				}
 			}
 		}
 	}
@@ -60,8 +88,12 @@ void Server::acceptNewClients()
 		m_clients.emplace_back(std::make_unique<SClient>());
 		m_connectedClients++;
 
+		m_clients[m_clients.size() - 2]->remoteIp = m_clients[m_clients.size() - 2]->socket.getRemoteAddress().toString();
+
 		std::cout << "Un nou client s-a conectat la server: [";
-		std::cout << m_clients[m_clients.size() - 2]->socket.getRemoteAddress().toString() << "]" << std::endl;
+		std::cout << m_clients[m_clients.size() - 2]->remoteIp << "]" << std::endl;
+
+		m_clients[m_clients.size() - 2]->disconnectDelayClock.restart();
 	}
 }
 

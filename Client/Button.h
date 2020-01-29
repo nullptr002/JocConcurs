@@ -8,7 +8,7 @@ class Button : public sf::Drawable
 {
 public:
 	// Constructor (e lung, dar nu am ce sa fac lmao)
-	Button(sf::Vector2f size, sf::Texture& simple, sf::Texture& hovered, sf::Texture& clicked, std::function<void()> onClick);
+	Button(sf::Vector2f size, sf::Texture* simple, sf::Texture* hovered, sf::Texture* clicked, std::function<void()> onClick, sf::Texture* disabled = nullptr);
 
 	// ca sa pot detecta daca mouse-ul se afla pe buton sau daca butonul a fost apasat
 	void pollEvents(sf::Event &evnt);
@@ -22,6 +22,9 @@ public:
 
 	void setPosition(sf::Vector2f pos);
 
+	void disable();
+	void enable();
+
 private:
 
 
@@ -33,10 +36,14 @@ private:
 	bool m_isHovered = false;
 	bool m_isClicked = false;
 
+	bool m_isDisabled = false;
+
 	// texturi pentru cand nu se intampla nimic, cand mouse-ul e pe buton sau cand a fost apasat
-	sf::Texture &m_simpleTexture;
-	sf::Texture &m_hoveredTexture;
-	sf::Texture &m_clickedTexture;
+	sf::Texture* m_simpleTexture;
+	sf::Texture* m_hoveredTexture;
+	sf::Texture* m_clickedTexture;
+
+	sf::Texture* m_disabledTexture;
 
 	std::function<void()> m_onClick;
 };

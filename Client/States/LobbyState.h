@@ -1,13 +1,14 @@
 #pragma once
 
 #include "State.h"
+#include <array>
 
-class IntroState : public State
+class LobbyState : public State
 {
 public:
-	IntroState();
+	LobbyState();
 
-	~IntroState() {}
+	~LobbyState() {}
 
 	void pollEvents(sf::Event& evnt, sf::RenderWindow& window)		override;
 	void update(sf::Time& deltaTime)								override;
@@ -18,21 +19,21 @@ public:
 
 	void loadTheOtherState(GameStateEnum which)						override;
 
-	static sf::Texture* const getBgTexture();
-
-private:
-	void opening();
-
 private:
 	sf::RectangleShape background;
-	static sf::Texture backgroundTexture;
 
-	sf::Text text;
+	struct Player
+	{
+		bool connected					= false;
+		std::string name				= "";
 
-	bool startingOpening = true;
+		sf::RectangleShape container	= sf::RectangleShape(sf::Vector2f(226, 320));
+		sf::Texture texture;
+	};
 
-	float durationIfEverythingOk = 3.0f;
+	std::array<Player, 4> players;
 
-	friend class MenuState;
-	friend class LobbyState;
+	int me = -1;
+
+private:
 };

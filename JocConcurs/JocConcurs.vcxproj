@@ -24,14 +24,17 @@
     <ClCompile Include="..\Client\clientMain.cpp" />
     <ClCompile Include="..\Client\EasingFunctions.cpp" />
     <ClCompile Include="..\Client\States\IntroState.cpp" />
+    <ClCompile Include="..\Client\States\LobbyState.cpp" />
     <ClCompile Include="..\Client\States\MenuState.cpp" />
     <ClCompile Include="..\Client\States\State.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Client\Button.h" />
     <ClInclude Include="..\Client\Client.h" />
+    <ClInclude Include="..\Client\ColorPallete.h" />
     <ClInclude Include="..\Client\EasingFunctions.h" />
     <ClInclude Include="..\Client\States\IntroState.h" />
+    <ClInclude Include="..\Client\States\LobbyState.h" />
     <ClInclude Include="..\Client\States\MenuState.h" />
     <ClInclude Include="..\Client\States\State.h" />
   </ItemGroup>
