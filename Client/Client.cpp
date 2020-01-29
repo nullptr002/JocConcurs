@@ -182,8 +182,6 @@ void Client::testConnection()
 
 		if (status == sf::Socket::Status::Done)
 		{
-			std::cout << "Test sent. Duration: " << testClock.getElapsedTime().asSeconds() - 1.0f << std::endl;
-
 			testClock.restart();
 			wasInserted = false;
 			

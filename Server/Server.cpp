@@ -1,6 +1,7 @@
 #include "Server.h"
 
 #include <iostream>
+#include <thread>
 
 Server& Server::getInstance()
 {
@@ -19,7 +20,9 @@ Server& Server::getInstance()
 
 	1 - testare conexiune
 	2 - nume
-	3 - 
+
+	3 - lobby initial state
+	4 - update lobby
 
 */
 
@@ -35,6 +38,7 @@ void Server::run()
 
 		for (size_t i = 0; i < m_clients.size() - 1; i++)
 		{
+			//// Receiving
 			sf::Socket::Status status = m_clients[i]->socket.receive(m_clients[i]->toReceive);
 
 			if (status == sf::Socket::Status::Done)
@@ -55,10 +59,13 @@ void Server::run()
 					std::cout << "Clientul [" << m_clients[i]->remoteIp << "] ";
 					std::cout << "si-a setat numele \"" << m_clients[i]->name << "\".";
 					std::cout << std::endl;
+
+					m_clients[i]->id = m_playersInLobby;
+					m_clients[i]->inLobby = true;
+					m_playersInLobby++;
 				}
 				else if (code == 3)
 				{
-					m_clients[i]->inLobby = true;
 					
 				}
 
@@ -72,11 +79,52 @@ void Server::run()
 				// conexiunea a picat
 				if (m_clients[i]->disconnectDelayClock.getElapsedTime().asSeconds() > m_disconnectTime)
 				{
+					if (m_clients[i]->inLobby)
+					{
+						m_playersInLobby--;
+					}
+
 					std::cout << "Clientul [" << m_clients[i]->remoteIp << "] ";
 					std::cout << "cu numele [\"" << m_clients[i]->name << "\"] s-a deconectat." << std::endl;
 					m_clients.erase(m_clients.begin() + i);
 				}
 			}
+
+			//// Sending
+			if (m_clients[i]->inLobby)
+			{
+				if (m_clients[i]->hasReceivedInitialInfo == false)
+				{
+					if (m_clients[i]->hasReceivedInitialInfoFlag == false)
+					{
+						m_clients[i]->toSend << 3 << m_clients[i]->id << m_playersInLobby;
+
+						for (int k = 0; k < m_clients.size(); k++)
+						{
+							if (m_clients[k]->inLobby == true && k != i)
+							{
+								m_clients[i]->toSend << k << m_clients[k]->name;
+							}
+						}
+
+						m_clients[i]->hasReceivedInitialInfoFlag = true;
+					}
+
+					sf::Socket::Status status = m_clients[i]->socket.send(m_clients[i]->toSend);
+
+					if (status == sf::Socket::Status::Done)
+					{
+						m_clients[i]->hasReceivedInitialInfo = true;
+						m_clients[i]->toSend.clear();
+
+						if (m_clients[i]->id != -1)
+						{
+							std::thread([&]() { m_clients[i]->sendToEveryone(m_clients); }).detach();
+						}
+					}
+				}
+			}
+
 		}
 	}
 }

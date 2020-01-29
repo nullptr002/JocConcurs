@@ -31,6 +31,8 @@ private:
 	int m_connectedClients = 0;
 	int m_maxConnectedClients = 4;
 
+	int m_playersInLobby = 0;
+
 	float m_disconnectTime = 3.0f;
 };
 

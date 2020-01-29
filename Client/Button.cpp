@@ -91,6 +91,41 @@ void Button::setPosition(sf::Vector2f pos)
 	m_body.setPosition(pos);
 }
 
+void Button::setScale(sf::Vector2f factor)
+{
+	m_body.setScale(factor);
+}
+
+sf::FloatRect Button::getGlobalBounds() const
+{
+	return m_body.getGlobalBounds();
+}
+
+void Button::setDisabledTexture(sf::Texture* texture)
+{
+	m_disabledTexture = texture;
+}
+
+void Button::setSimpleTexture(sf::Texture* texture)
+{
+	m_simpleTexture = texture;
+
+	if (m_simpleTexture)
+	{
+		m_body.setTexture(m_simpleTexture);
+	}
+}
+
+void Button::setHoveredTexture(sf::Texture* texture)
+{
+	m_hoveredTexture = texture;
+}
+
+void Button::setClickedTexture(sf::Texture* texture)
+{
+	m_clickedTexture = texture;
+}
+
 void Button::disable()
 {
 	if (m_disabledTexture)
@@ -99,6 +134,8 @@ void Button::disable()
 
 		m_isClicked = false;
 		m_isHovered = false;
+
+		m_body.setTexture(m_disabledTexture);
 	}
 }
 

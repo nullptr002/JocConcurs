@@ -1,6 +1,7 @@
 #pragma once
 
 #include "State.h"
+#include "../Button.h"
 #include <array>
 
 class LobbyState : public State
@@ -22,13 +23,28 @@ public:
 private:
 	sf::RectangleShape background;
 
+	sf::Texture suntGataSimple;
+	sf::Texture suntGataHovered;
+	sf::Texture suntGataClicked;
+	sf::Texture suntGataDisabled;
+
 	struct Player
 	{
 		bool connected					= false;
+		bool ready						= false;
 		std::string name				= "";
 
 		sf::RectangleShape container	= sf::RectangleShape(sf::Vector2f(226, 320));
 		sf::Texture texture;
+		Button readyButton
+		{
+			sf::Vector2f(226, 50),
+			nullptr,
+			nullptr,
+			nullptr,
+			[&]() { },
+			nullptr
+		};
 	};
 
 	std::array<Player, 4> players;

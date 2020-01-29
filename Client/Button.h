@@ -22,6 +22,15 @@ public:
 
 	void setPosition(sf::Vector2f pos);
 
+	void setScale(sf::Vector2f factor);
+
+	sf::FloatRect getGlobalBounds() const;
+
+	void setDisabledTexture(sf::Texture* texture);
+	void setSimpleTexture(sf::Texture* texture);
+	void setHoveredTexture(sf::Texture* texture);
+	void setClickedTexture(sf::Texture* texture);
+
 	void disable();
 	void enable();
 
