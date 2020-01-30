@@ -29,6 +29,8 @@ public:
 	bool hasReceivedInitialInfo = false;
 	bool hasReceivedInitialInfoFlag = false;
 
+	bool isReady = false;
+
 	bool updated[4]{ 0,0,0,0 };
 };
 

@@ -8,7 +8,7 @@ SClient::SClient()
 
 void SClient::sendToEveryone(std::vector<std::unique_ptr<SClient>> &clients)
 {
-	for (int i = 0; i < clients.size(); i++)
+	for (int i = 0; i < clients.size() - 1; i++)
 	{
 		if (updated[i] == 0)
 		{
@@ -19,6 +19,7 @@ void SClient::sendToEveryone(std::vector<std::unique_ptr<SClient>> &clients)
 					sf::Socket::Status status = clients[i]->socket.send(packetToSendToEveryone[i]);
 					if (status == sf::Socket::Status::Done)
 					{
+						std::cout << "Clientul [" << this->id << "] a trimis clientului [" << clients[i]->id << "]" << std::endl;
 						updated[i] = true;
 						packetToSendToEveryone[i].clear();
 					}
@@ -37,5 +38,5 @@ void SClient::sendToEveryone(std::vector<std::unique_ptr<SClient>> &clients)
 			}
 		}
 	}
-
+	std::cout << std::endl;
 }

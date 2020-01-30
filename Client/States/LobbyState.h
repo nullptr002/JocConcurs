@@ -28,14 +28,20 @@ private:
 	sf::Texture suntGataClicked;
 	sf::Texture suntGataDisabled;
 
+	sf::Text playerCount;
+
 	struct Player
 	{
-		bool connected					= false;
-		bool ready						= false;
-		std::string name				= "";
+		bool connected						= false;
+		bool ready							= false;
+		std::string name					= "";
 
-		sf::RectangleShape container	= sf::RectangleShape(sf::Vector2f(226, 320));
+		sf::RectangleShape nameContainer	= sf::RectangleShape(sf::Vector2f(226, 50));
+		sf::Text nameText;
+
+		sf::RectangleShape container		= sf::RectangleShape(sf::Vector2f(226, 320));
 		sf::Texture texture;
+
 		Button readyButton
 		{
 			sf::Vector2f(226, 50),
@@ -50,6 +56,8 @@ private:
 	std::array<Player, 4> players;
 
 	int me = -1;
+
+	bool readyFlag = false;
 
 private:
 };

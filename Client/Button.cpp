@@ -20,8 +20,11 @@ void Button::pollEvents(sf::Event& evnt)
 	// pentru ca e mai usor sa folosesc "virtualMousePtr" in loc de "Client::getInstance().getVirtualCursor()"
 	const sf::RectangleShape *const virtualMousePtr = &Client::getInstance().getVirtualCursor();
 
-	
-	if (m_isDisabled)
+	if (m_lockedClicked)
+	{
+
+	}
+	else if (m_isDisabled)
 	{
 		m_body.setTexture(m_disabledTexture);
 	}
@@ -47,7 +50,11 @@ void Button::pollEvents(sf::Event& evnt)
 			}
 		}
 
-		if (evnt.type == sf::Event::MouseButtonPressed && m_isHovered == true)
+		if (m_lockedClicked)
+		{
+
+		}
+		else if (evnt.type == sf::Event::MouseButtonPressed && m_isHovered == true)
 		{
 			if (evnt.mouseButton.button == sf::Mouse::Left)
 			{
@@ -126,6 +133,11 @@ void Button::setClickedTexture(sf::Texture* texture)
 	m_clickedTexture = texture;
 }
 
+void Button::setOnClickLambda(std::function<void()> lambda)
+{
+	m_onClick = lambda;
+}
+
 void Button::disable()
 {
 	if (m_disabledTexture)
@@ -142,4 +154,14 @@ void Button::disable()
 void Button::enable()
 {
 	m_isDisabled = false;
+}
+
+void Button::lockClicked()
+{
+	m_lockedClicked = true;
+
+	if (m_clickedTexture)
+	{
+		m_body.setTexture(m_clickedTexture);
+	}
 }

@@ -40,7 +40,6 @@ void Client::run()
 			}
 		}
 
-
 		m_states.at(static_cast<int>(selectedState))->update(deltaTime);
 
 		handleWindowDrag2();
@@ -87,6 +86,7 @@ Client::Client()
 	socket.setBlocking(false);
 
 	packetToSend << 2 << name;
+	std::cout << name << std::endl;
 }
 
 Client::~Client()
@@ -111,7 +111,7 @@ void Client::handleWindowDrag1(sf::Event& evnt)
 
 void Client::handleWindowDrag2()
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && m_window.hasFocus())
 	{
 		State::s_transitionRectangle->setOutlineColor(colorPallete.outline2);
 		isWindowGrabbed = sf::Mouse::isButtonPressed(sf::Mouse::Left);

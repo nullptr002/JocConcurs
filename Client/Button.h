@@ -31,8 +31,12 @@ public:
 	void setHoveredTexture(sf::Texture* texture);
 	void setClickedTexture(sf::Texture* texture);
 
+	void setOnClickLambda(std::function<void()> lambda);
+
 	void disable();
 	void enable();
+
+	void lockClicked();
 
 private:
 
@@ -46,6 +50,8 @@ private:
 	bool m_isClicked = false;
 
 	bool m_isDisabled = false;
+
+	bool m_lockedClicked = false;
 
 	// texturi pentru cand nu se intampla nimic, cand mouse-ul e pe buton sau cand a fost apasat
 	sf::Texture* m_simpleTexture;
