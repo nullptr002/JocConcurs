@@ -1,7 +1,6 @@
 #include "Server.h"
 
 #include <iostream>
-#include <thread>
 
 Server& Server::getInstance()
 {
@@ -117,10 +116,20 @@ void Server::run()
 						m_clients[i]->hasReceivedInitialInfo = true;
 						m_clients[i]->toSend.clear();
 
-						if (m_clients[i]->id != -1)
+						for (int j = 0; j < 4; j++)
 						{
-							std::thread([&]() { m_clients[i]->sendToEveryone(m_clients); }).detach();
+							m_clients[i]->packetToSendToEveryone[j].clear();
+							m_clients[i]->packetToSendToEveryone[j] << 4;
+							m_clients[i]->packetToSendToEveryone[j] << m_clients[i]->id;
+							m_clients[i]->packetToSendToEveryone[j] << m_clients[i]->name;
 						}
+					}
+				}
+				else
+				{
+					if (std::find(std::begin(m_clients[i]->updated), std::end(m_clients[i]->updated), 0) != std::end(m_clients[i]->updated))
+					{
+						m_clients[i]->sendToEveryone(m_clients);
 					}
 				}
 			}

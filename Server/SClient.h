@@ -19,6 +19,7 @@ public:
 
 	sf::Packet toSend;
 	sf::Packet toReceive;
+	sf::Packet packetToSendToEveryone[4];
 
 	sf::Clock disconnectDelayClock;
 
@@ -28,6 +29,6 @@ public:
 	bool hasReceivedInitialInfo = false;
 	bool hasReceivedInitialInfoFlag = false;
 
-	bool updated[3]{ 0,0,0 };
+	bool updated[4]{ 0,0,0,0 };
 };
 
