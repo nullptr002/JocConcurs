@@ -87,7 +87,7 @@ Client::Client()
 	socket.setBlocking(false);
 
 	packetToSend << 2 << name;
-	std::cout << name << std::endl;
+	std::cout << "test" << std::endl;
 }
 
 Client::~Client()

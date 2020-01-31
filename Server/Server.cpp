@@ -24,6 +24,8 @@ Server& Server::getInstance()
 	4 - update lobby
 	5 - is player ready
 
+	6 - mutare
+
 */
 
 
@@ -79,6 +81,36 @@ void Server::run()
 						m_clients.at(i)->packetToSendToEveryone[j] << 5 << m_clients.at(i)->id;
 
 						m_clients.at(i)->packetToSendToEveryone[j] << currentTurn;
+					}
+				}
+				else if (code == 6)
+				{
+					std::cout << "Clientul " << i << " a facut o mutare!" << std::endl;
+
+					int whatKindOfCapture;
+					m_clients.at(i)->toReceive >> whatKindOfCapture;
+
+					int theId, theI, theJ;
+					int theI2 = -1, theJ2 = -1;
+					m_clients.at(i)->toReceive >> theId >> theI >> theJ;
+
+					if (whatKindOfCapture == 1)
+					{
+						m_clients.at(i)->toReceive >> theI2 >> theJ2;
+					}
+
+					for (int j = 0; j < 4; j++)
+					{
+						m_clients.at(i)->updated[j] = false;
+
+						m_clients.at(i)->packetToSendToEveryone[j].clear();
+
+						m_clients.at(i)->packetToSendToEveryone[j] << 6 << whatKindOfCapture << theId << theI << theJ;
+
+						if (whatKindOfCapture == 1)
+						{
+							m_clients.at(i)->packetToSendToEveryone[j] << theI2 << theJ2;
+						}
 					}
 				}
 

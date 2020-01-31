@@ -195,7 +195,6 @@ void LobbyState::receiveFromServer(sf::TcpSocket& socket)
 			std::cout << "me: " << me << std::endl;
 			std::cout << "playersCount: " << playersCount << std::endl;
 
-
 			players[me].container.setTexture(&players[me].texture);
 			players[me].container.setFillColor(sf::Color::White);
 			players[me].container.setOutlineColor(sf::Color::White);
@@ -206,6 +205,8 @@ void LobbyState::receiveFromServer(sf::TcpSocket& socket)
 			players[me].name = s_client->getName();
 			players[me].nameText.setString(players[me].name);
 			players[me].nameText.setOrigin(players[me].nameText.getLocalBounds().width / 2.0f, 0.0f);
+
+			playerNames[me] = players[me].name;
 
 			players[me].readyButton.setOnClickLambda
 			(
@@ -238,6 +239,8 @@ void LobbyState::receiveFromServer(sf::TcpSocket& socket)
 
 						players[index].nameText.setString(players[index].name);
 						players[index].nameText.setOrigin(players[index].nameText.getLocalBounds().width / 2.0f, 0.0f);
+
+						playerNames[index] = players[index].name;
 					}
 				}
 			}
