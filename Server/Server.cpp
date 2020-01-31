@@ -77,6 +77,8 @@ void Server::run()
 						m_clients.at(i)->packetToSendToEveryone[j].clear();
 
 						m_clients.at(i)->packetToSendToEveryone[j] << 5 << m_clients.at(i)->id;
+
+						m_clients.at(i)->packetToSendToEveryone[j] << currentTurn;
 					}
 				}
 
@@ -174,7 +176,12 @@ void Server::acceptNewClients()
 }
 
 Server::Server()
+	: rng(dev())
 {
+	// deciderea random a persoanei care va face prima mutare in joc
+	std::uniform_int_distribution<int> dist(0, 3);
+	currentTurn = dist(rng);
+
 	m_clients.emplace_back(std::make_unique<SClient>());
 
 	m_listener.listen(20000);

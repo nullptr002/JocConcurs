@@ -38,7 +38,7 @@ State::State()
 
 void State::pollEvents(sf::Event& evnt, sf::RenderWindow& window)
 {
-	if (evnt.type == sf::Event::Closed)
+	if (evnt.type == sf::Event::Closed || (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LAlt) && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F4)))
 	{
 		window.close();
 	}

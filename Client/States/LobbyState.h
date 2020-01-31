@@ -9,7 +9,7 @@ class LobbyState : public State
 public:
 	LobbyState();
 
-	~LobbyState() {}
+	~LobbyState() {};
 
 	void pollEvents(sf::Event& evnt, sf::RenderWindow& window)		override;
 	void update(sf::Time& deltaTime)								override;
@@ -19,6 +19,10 @@ public:
 	void receiveFromServer(sf::TcpSocket& socket)					override;
 
 	void loadTheOtherState(GameStateEnum which)						override;
+
+	static int getPlayerThatStarts();
+	static int getMe();
+	static std::array<std::string, 4>* getPlayerNames();
 
 private:
 	sf::RectangleShape background;
@@ -54,10 +58,17 @@ private:
 	};
 
 	std::array<Player, 4> players;
+	static std::array<std::string, 4> playerNames;
 
-	int me = -1;
+	static int me;
+
+	static int playerThatStarts;
+
 
 	bool readyFlag = false;
+
+	bool switchToGame = false;
+
 
 private:
 };

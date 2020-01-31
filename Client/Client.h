@@ -14,7 +14,8 @@ enum class GameStateEnum
 {
 	intro,
 	menu,
-	lobby
+	lobby,
+	game
 };
 
 // Clasa de baza, singleton (nu pot exista 2 instante)
@@ -105,7 +106,7 @@ private:
 	bool isWindowGrabbed = false;
 	
 	// container cu toate game state-urile
-	std::array<std::unique_ptr<State>, 3> m_states;
+	std::array<std::unique_ptr<State>, 4> m_states;
 	
 	// game state-ul selectat
 	GameStateEnum selectedState			= GameStateEnum::intro;

@@ -6,6 +6,10 @@
 
 #include <iostream>
 
+int LobbyState::playerThatStarts = -1;
+int LobbyState::me = -1;
+std::array<std::string, 4> LobbyState::playerNames;
+
 LobbyState::LobbyState()
 	: background(sf::Vector2f(Client::constants().window.width, Client::constants().window.height)),
 	  playerCount("1/4", Client::getFont(), 20)
@@ -101,9 +105,29 @@ void LobbyState::update(sf::Time& deltaTime)
 		}
 	}
 
+	if (players[0].ready && players[1].ready && players[2].ready && players[3].ready)
+	{
+		static bool once = false;
+
+		if (!once)
+		{
+			switchToGame = true;
+			changeState();
+			once = true;
+		}
+	}
+
 	if (transitioning)
 	{
 		State::transition();
+
+		if (switchToGame)
+		{
+			if (transitionClock.getElapsedTime().asSeconds() > transitionDuration / 2)
+			{
+				loadTheOtherState(GameStateEnum::game);
+			}
+		}
 	}
 	else
 	{
@@ -232,11 +256,15 @@ void LobbyState::receiveFromServer(sf::TcpSocket& socket)
 
 			players[index].nameText.setString(players[index].name);
 			players[index].nameText.setOrigin(players[index].nameText.getLocalBounds().width / 2.0f, 0.0f);
+
+			playerNames[index] = players[index].name;
+
 		}
 		else if (code == 5)
 		{
 			int theId = -1;
 			toReceivePacket >> theId;
+			toReceivePacket >> playerThatStarts;
 
 			players[theId].ready = true;
 		}
@@ -247,4 +275,20 @@ void LobbyState::receiveFromServer(sf::TcpSocket& socket)
 
 void LobbyState::loadTheOtherState(GameStateEnum which)
 {
+	Client::getInstance().setState(which);
+}
+
+int LobbyState::getPlayerThatStarts()
+{
+	return playerThatStarts;
+}
+
+int LobbyState::getMe()
+{
+	return me;
+}
+
+std::array<std::string, 4>* LobbyState::getPlayerNames()
+{
+	return &playerNames;
 }

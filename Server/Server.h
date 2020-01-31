@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <random>
 
 #include <SFML/Network.hpp>
 
@@ -34,5 +35,10 @@ private:
 	int m_playersInLobby = 0;
 
 	float m_disconnectTime = 3.0f;
+
+	int currentTurn = -1;
+
+	std::random_device dev;
+	std::mt19937 rng;
 };
 

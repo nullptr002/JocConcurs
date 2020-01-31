@@ -3,6 +3,7 @@
 #include "States/MenuState.h"
 #include "States/IntroState.h"
 #include "States/LobbyState.h"
+#include "States/GameState.h"
 
 #include "ColorPallete.h"
 
@@ -79,7 +80,7 @@ void Client::setState(GameStateEnum which)
 }
 
 Client::Client()
-	: m_states{ { std::make_unique<IntroState>(), std::make_unique<MenuState>(), std::make_unique<LobbyState>() } }
+	: m_states{ { std::make_unique<IntroState>(), std::make_unique<MenuState>(), std::make_unique<LobbyState>(), std::make_unique<GameState>() } }
 {
 	font.loadFromFile("resources/ebrima.ttf");
 
